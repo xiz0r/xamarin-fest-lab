@@ -21,9 +21,9 @@ namespace Cognitive.Services.Lab
 		public CognitiveService()
 		{
 			// Face APIs
-			FaceServiceClient = new FaceServiceClient("25cb663824684ae88357c0f7f0c460ac");
+			FaceServiceClient = new FaceServiceClient("FACE-API-KEY");
 			// Emotion APIs
-			EmotionServiceClient = new EmotionServiceClient("f8b92cbe5d704194a05df3f1322a00e6");
+			EmotionServiceClient = new EmotionServiceClient("EMOTION-API-KEY");
 		}
 
 		/// <summary>
