@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Cognitive.Services.Lab.DetectPage" Title="Face detection">
+	<ContentPage.Content>
+		<ScrollView>
+			<StackLayout Orientation="Vertical" x:Name="sLayout">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+					<Button Grid.Column="0" x:Name="TakePictureButton" Clicked="TakePictureButton_Clicked" Text="Take from camera" />
+					<Button Grid.Column="1" x:Name="UploadPictureButton" Clicked="UploadPictureButton_Clicked" Text="Select image" />
+				</Grid>
+				<ActivityIndicator x:Name="Indicator1" IsVisible="False" IsRunning="False" />
+				<Image x:Name="Image1" HeightRequest="240" />
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="3*" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+					<Entry x:Name="NameEntry" Placeholder="Person name" />
+					<Button Grid.Column="1" IsEnabled="false" x:Name="AddFaceButton" Clicked="AddFaceButton_Clicked" Text="Add face" />
+				</Grid>
+				<StackLayout Orientation="Horizontal" Padding="3">
+					<Label Text="Gender: " />
+					<Label x:Name="GenderLabel" Text="{Binding Path=Gender}" />
+				</StackLayout>
+				<StackLayout Orientation="Horizontal" Padding="3">
+					<Label Text="Age: " />
+					<Label x:Name="AgeLabel" Text="{Binding Path=Age}" />
+				</StackLayout>
+				<StackLayout Orientation="Horizontal" Padding="3">
+					<Label Text="Emotion: " />
+					<Label x:Name="EmotionLabel" Text="{Binding Path=Emotion}" />
+				</StackLayout>
+				<StackLayout Orientation="Horizontal" Padding="3">
+					<Label Text="Smile: " />
+					<Label x:Name="SmileLabel" Text="{Binding Smile}" />
+				</StackLayout>
+				<StackLayout Orientation="Horizontal" Padding="3">
+					<Label Text="Glasses: " />
+					<Label x:Name="GlassesLabel" Text="{Binding Path=Glasses}" />
+				</StackLayout>
+				<StackLayout Orientation="Horizontal" Padding="3">
+					<Label Text="Beard: " />
+					<Label x:Name="BeardLabel" Text="{Binding Path=Beard}" />
+				</StackLayout>
+				<StackLayout Orientation="Horizontal" Padding="3">
+					<Label Text="Moustache: " />
+					<Label x:Name="MoustacheLabel" Text="{Binding Path=Moustache}" />
+				</StackLayout>
+			</StackLayout>
+		</ScrollView>
+	</ContentPage.Content>
+</ContentPage>

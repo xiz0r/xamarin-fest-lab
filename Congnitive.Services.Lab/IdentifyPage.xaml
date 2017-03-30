@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Cognitive.Services.Lab.IdentifyPage" Title="Face Identification">
+	<ContentPage.Content>
+		<ScrollView>
+			<StackLayout Orientation="Vertical" x:Name="sLayout">
+				<Button x:Name="TakePictureButton" Clicked="TakePictureButton_Clicked" Text="Take from camera" />
+				<Button x:Name="UploadPictureButton" Clicked="UploadPictureButton_Clicked" Text="Select image" />
+				<ActivityIndicator x:Name="Indicator1" IsVisible="False" IsRunning="False" />
+				<Image x:Name="Image1" HeightRequest="240" />
+				<Button x:Name="IdentifyButton" Clicked="IdentifyButton_Clicked" Text="Identify" />
+				<ListView x:Name="lstCandidates" SeparatorVisibility="None">
+				</ListView>
+			</StackLayout>
+		</ScrollView>
+	</ContentPage.Content>
+</ContentPage>

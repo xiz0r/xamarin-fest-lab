@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Cognitive.Services.Lab.MainPage" Title="Cognitive services">
+	<ContentPage.Content>
+		<StackLayout>
+			<Button Text="Face detection" Clicked="FaceDetection_Clicked" />
+			<Label Text="Detect one or more human faces in an image" Margin="0,0,0,20" />
+			<Button Text="Face Identification" Clicked="FaceIdentification_Clicked" />
+			<Label Text="Search and identify faces. Tag people and groups with user-provided data and then search those for a match with previously unseen faces." />
+			<Image x:Name="imgXamarinFest" Aspect="AspectFit" />
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>

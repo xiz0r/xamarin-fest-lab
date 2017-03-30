@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Cognitive.Services.Lab.ImageSelectionModalPage">
+	<ContentPage.Content>
+		<StackLayout>
+			<Button x:Name="CloseButton" Text="Close" Clicked="CloseButton_Clicked" />
+			<ActivityIndicator x:Name="Indicator1" IsVisible="False" IsRunning="False" />
+			<ListView x:Name="lstImages" SeparatorVisibility="None">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<ViewCell>
+							<StackLayout Orientation="Horizontal" HeightRequest="100">
+								<Image Source="{Binding StorageUri}" WidthRequest="100" HeightRequest="100" />
+								<Label Text="{Binding Name}" Margin="20,0,0,0" />
+							</StackLayout>
+						</ViewCell>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>
