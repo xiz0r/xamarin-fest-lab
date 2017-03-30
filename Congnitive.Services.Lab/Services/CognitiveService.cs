@@ -67,9 +67,25 @@ namespace Cognitive.Services.Lab
 		/// <returns></returns>
 		public async Task TrainPersonGroup()
 		{
-			throw new NotImplementedException();
+			try
+			{
+				await FaceServiceClient.TrainPersonGroupAsync(PersonGroupId);
+				TrainingStatus trainingStatus = null;
 
-			// 1- Entrenar el grupo utilizando el servicio FaceServiceClient (TrainPersonGroupAsync)
+				while (true)
+				{
+					trainingStatus = await FaceServiceClient.GetPersonGroupTrainingStatusAsync(PersonGroupId);
+
+					if (trainingStatus.Status != Status.Running)
+						break;
+
+					await Task.Delay(1000);
+				}
+			}
+			catch
+			{
+				return;
+			}
 		}
 
 		/// <summary>
