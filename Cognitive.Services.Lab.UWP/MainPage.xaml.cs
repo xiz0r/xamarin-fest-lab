@@ -26,7 +26,7 @@ namespace Cognitive.Services.Lab.UWP
         {
             this.InitializeComponent();
 
-            LoadApplication(new Congnitive.Services.Lab.App());
+            LoadApplication(new Cognitive.Services.Lab.App());
         }
     }
 }
