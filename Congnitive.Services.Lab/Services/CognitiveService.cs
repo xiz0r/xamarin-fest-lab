@@ -21,50 +21,79 @@ namespace Cognitive.Services.Lab
 		public CognitiveService()
 		{
 			// Face APIs
-			FaceServiceClient = new FaceServiceClient("FACE-API-KEY");
+			FaceServiceClient = new FaceServiceClient("25cb663824684ae88357c0f7f0c460ac");
 			// Emotion APIs
-			EmotionServiceClient = new EmotionServiceClient("EMOTION-API-KEY");
+			EmotionServiceClient = new EmotionServiceClient("f8b92cbe5d704194a05df3f1322a00e6");
 		}
 
 		/// <summary>
 		/// Detecta los rostros y las emociones de una imagen
 		/// </summary>
 		/// <returns>The face and emotions async.</returns>
-		/// <param name="fileUrl">Input file.</param>
-		public async Task<FaceEmotionDetection> DetectFaceAndEmotionsAsync(string fileUrl)
+		/// <param name="inputFile">Input file.</param>
+		public async Task<FaceEmotionDetection> DetectFaceAndEmotionsAsync(string inputFile)
 		{
-			throw new NotImplementedException();
+			// Obtenemos las emociones para la imagen
+			var emotionResult = await EmotionServiceClient.RecognizeAsync(inputFile);
 
-			// 1- Obtener las emociones utilizando el servicio EmotionServiceClient (RecognizeAsync)
+			// Se asume que en la imagen hay solo un rostro, se retorna las emociones para el primer resultado
+			var faceEmotion = emotionResult[0]?.Scores.ToRankedList();
 
-			// 2- Obtener la lista de rostros utilizando el servicio FaceServiceClient (DetectAsync)
-			// 	Enviar la lista completa de attributos FaceAttributeType al servicio (Age,Gender,FacialHair,Smile,HeadPose,Glasses)
+			// Creamos la lista con los atributos que queremos analizar
+			var requiredFaceAttributes = new FaceAttributeType[] {
+				FaceAttributeType.Age,
+				FaceAttributeType.Gender,
+				FaceAttributeType.Smile,
+				FaceAttributeType.FacialHair,
+				FaceAttributeType.HeadPose,
+				FaceAttributeType.Glasses
+				};
+
+			// Obtenemos la lista de rostros en la imagen
+			var faces = await FaceServiceClient.DetectAsync(inputFile, false, false, requiredFaceAttributes);
+
+			// Asumimos que hay solo un rostro en la foto y obtenemos los atributos
+			var faceAttributes = faces[0]?.FaceAttributes;
+
+			if (faceEmotion == null || faceAttributes == null) return null;
+
+			return new FaceEmotionDetection
+			{
+				Age = faceAttributes.Age,
+				Gender = faceAttributes.Gender,
+				Glasses = faceAttributes.Glasses.ToString(),
+				Smile = faceAttributes.Smile,
+				Beard = faceAttributes.FacialHair.Beard,
+				Emotion = faceEmotion.FirstOrDefault().Key,
+				Moustache = faceAttributes.FacialHair.Moustache
+			};
 		}
 
 
 		/// <summary>
 		/// Crea la persona y le asigna un rostro.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The person face async.</returns>
 		/// <param name="name">Name.</param>
 		/// <param name="fileUrl">File URL.</param>
 		public async Task AddPersonFaceAsync(string name, string fileUrl)
 		{
-			throw new NotImplementedException();
+			if (string.IsNullOrWhiteSpace(PersonGroupId))
+			{
+				PersonGroupId = Guid.NewGuid().ToString();
+				await FaceServiceClient.CreatePersonGroupAsync(PersonGroupId, "Friends");
+			}
 
-			// 1- Crear grupo de personas
+			var p = await FaceServiceClient.CreatePersonAsync(PersonGroupId, name);
+			await FaceServiceClient.AddPersonFaceAsync(PersonGroupId, p.PersonId, fileUrl);
 
-			// 2- Crear la persona utilizando el servicio FaceServiceClient (CreatePersonAsync)
-
-			// 3- Agregar un rostro a la persona creada utilizando el servicio FaceServiceClient (AddPersonFaceAsync)
-
-			// 4- Entrenar el grupo (TrainPersonGroup)
+			await TrainPersonGroup();
 		}
 
 		/// <summary>
 		/// Entrena el algoritmo de identificacion con los rostros del grupo.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The person group.</returns>
 		public async Task TrainPersonGroup()
 		{
 			try
@@ -91,19 +120,30 @@ namespace Cognitive.Services.Lab
 		/// <summary>
 		/// Identifica los rostros de las personas del grupo en la foto.
 		/// </summary>
-		/// <returns>Nombre de las personas identificadas</returns>
-		/// <param name="fileUrl">File.</param>
-		public async Task<List<string>> IdentifyFaceAsync(string fileUrl)
+		/// <returns>The face async.</returns>
+		/// <param name="file">File.</param>
+		public async Task<List<string>> IdentifyFaceAsync(string file)
 		{
-			throw new NotImplementedException();
+			var result = new List<string>();
+			var faces = await FaceServiceClient.DetectAsync(file);
+			var faceIds = faces.Select(face => face.FaceId).ToArray();
 
-			// 1- Utilizar el servicio FaceServiceCliente para obtener los FaceId de los rostros en la imagen (DetectAsync)
-
-			// 2- Identificar los rostros del grupo que aparecen en la imagen utilizando el servicio FaceServiceClient (IdentifyAsync)
-
-			// 3- Validar los rostros identificados para ver si hay candidatos contra nuestro grupo
-
-			// 4- Si hay candidatos obtener el detalle utilizando el servicio FaceServiceClient (GetPersonAsync)
+			var results = await FaceServiceClient.IdentifyAsync(PersonGroupId, faceIds);
+			foreach (var identifyResult in results)
+			{
+				if (identifyResult.Candidates.Length == 0)
+				{
+					result.Add("Unknown");
+				}
+				else
+				{
+					// Obtenemos el primer candidato de la lista retornada
+					var candidateId = identifyResult.Candidates[0].PersonId;
+					var person = await FaceServiceClient.GetPersonAsync(PersonGroupId, candidateId);
+					result.Add(person.Name);
+				}
+			}
+			return result;
 		}
 	}
 }
